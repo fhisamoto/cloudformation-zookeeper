@@ -32,7 +32,7 @@
     "DockerImage" : {
       "Description" : "Path of the ZK+Exhibitor Docker image (format: '[<registry>[:<port>]/]<repository>:<version>')",
       "Type" : "String",
-      "Default" : "mbabineau/zookeeper-exhibitor:3.4.6_1.5.4"
+      "Default" : "mbabineau/zookeeper-exhibitor:3.4.6_1.5.5"
     },
     "ExhibitorS3Bucket" : {
       "Description" : "Bucket for Exhibitor backups of ZK configs",
@@ -62,35 +62,6 @@
       "Description" : "(Optional) If passed, only launch nodes in these AZs (e.g., 'us-east-1a,us-east-1b'). Note: these must match up with the passed Subnets.",
       "Type" : "CommaDelimitedList",
       "Default" : ""
-    }
-  },
-
-  "Mappings" : {
-    "RegionMap" : {
-      "us-east-1" : {
-        "AMI" : "ami-96163afe"
-      },
-      "us-west-1" : {
-        "AMI" : "ami-117c9a55"
-      },
-      "us-west-2" : {
-        "AMI" : "ami-8d123ebd"
-      },
-      "eu-west-1" : {
-        "AMI" : "ami-8be47afc"
-      },
-      "ap-southeast-1" : {
-        "AMI" : "ami-64b88936"
-      },
-      "ap-southeast-2" : {
-        "AMI" : "ami-abf48491"
-      },
-      "ap-northeast-1" : {
-        "AMI" : "ami-3d62953d"
-      },
-      "sa-east-1" : {
-        "AMI" : "ami-db1fa7c6"
-      }
     }
   },
 
@@ -146,7 +117,9 @@
         "MinSize" : "1",
         "MaxSize" : "9",
         "DesiredCapacity" : { "Ref" : "ClusterSize" },
+
         "LoadBalancerNames" : [ { "Ref" : "ElasticLoadBalancer" } ],
+
         "VPCZoneIdentifier" : { "Ref" : "Subnets" },
         "Tags" : [
           {
@@ -167,8 +140,8 @@
       "Type" : "AWS::AutoScaling::LaunchConfiguration",
       "Properties" : {
         "KeyName" : { "Ref" : "KeyName" },
-        "ImageId" : { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "AMI"] },
-        "SecurityGroups" : [ { "Ref" : "ServerSecurityGroup" }, { "Ref" : "AdminSecurityGroup" }  ],
+        "ImageId" : "ami-37430252",
+        "SecurityGroups" : [ { "Ref" : "ServerSecurityGroup" }, { "Ref" : "AdminSecurityGroup" } ],
         "AssociatePublicIpAddress": "true",
         "InstanceType" : { "Ref" : "InstanceType" },
         "UserData"       : { "Fn::Base64" : { "Fn::Join" : ["", [
@@ -265,6 +238,7 @@
         }
       }
     },
+
 
     "WaitHandle" : {
       "Type" : "AWS::CloudFormation::WaitConditionHandle"
